@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Japan Operator — Coming Soon</title>
+    <meta name="description" content="Japan Operator — Conversations with the people building businesses in Japan.">
+    <meta property="og:title" content="Japan Operator">
+    <meta property="og:description" content="Conversations with the people building businesses in Japan.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://japanoperator.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --bg-elevated: #111111;
+            --surface: #1a1a1a;
+            --border: #222222;
+            --text-primary: #e8e4df;
+            --text-secondary: #8a8580;
+            --text-muted: #5a5550;
+            --accent: #c4956a;
+            --accent-dim: #a07a55;
+            --accent-glow: rgba(196, 149, 106, 0.08);
+            --serif: 'Instrument Serif', Georgia, serif;
+            --sans: 'Geist', -apple-system, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text-primary);
+            font-family: var(--sans);
+            font-weight: 300;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── Grain overlay ── */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* ── Nav ── */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1.5rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(10, 10, 10, 0.7);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-mark {
+            font-family: var(--serif);
+            font-size: 1.1rem;
+            letter-spacing: 0.02em;
+            color: var(--text-primary);
+        }
+
+        .nav-status {
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .nav-status::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            animation: pulse 2.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; box-shadow: 0 0 8px var(--accent); }
+        }
+
+        /* ── Hero ── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 8rem 2rem 4rem;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-label {
+            font-size: 0.65rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            animation: fadeUp 1s ease 0.2s forwards;
+        }
+
+        .hero-title {
+            font-family: var(--serif);
+            font-weight: 400;
+            font-size: clamp(3.5rem, 10vw, 8rem);
+            line-height: 0.95;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            margin-bottom: 0.3em;
+            opacity: 0;
+            animation: fadeUp 1s ease 0.4s forwards;
+        }
+
+        .hero-title em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .hero-sub {
+            font-size: clamp(1rem, 2.2vw, 1.25rem);
+            color: var(--text-secondary);
+            max-width: 480px;
+            line-height: 1.6;
+            margin-bottom: 3.5rem;
+            opacity: 0;
+            animation: fadeUp 1s ease 0.6s forwards;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Email signup ── */
+        .signup-form {
+            display: flex;
+            gap: 0;
+            max-width: 440px;
+            width: 100%;
+            opacity: 0;
+            animation: fadeUp 1s ease 0.8s forwards;
+        }
+
+        .signup-input {
+            flex: 1;
+            padding: 0.9rem 1.2rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-right: none;
+            border-radius: 6px 0 0 6px;
+            color: var(--text-primary);
+            font-family: var(--sans);
+            font-size: 0.85rem;
+            font-weight: 300;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .signup-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .signup-input:focus {
+            border-color: var(--accent-dim);
+        }
+
+        .signup-btn {
+            padding: 0.9rem 1.8rem;
+            background: var(--accent);
+            border: 1px solid var(--accent);
+            border-radius: 0 6px 6px 0;
+            color: var(--bg);
+            font-family: var(--sans);
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .signup-btn:hover {
+            background: var(--accent-dim);
+            border-color: var(--accent-dim);
+        }
+
+        .signup-note {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
+            opacity: 0;
+            animation: fadeUp 1s ease 1s forwards;
+        }
+
+        /* ── Divider ── */
+        .divider {
+            width: 60px;
+            height: 1px;
+            background: var(--border);
+            margin: 0 auto;
+        }
+
+        /* ── About section ── */
+        .about {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 6rem 2rem 8rem;
+            text-align: center;
+        }
+
+        .about-label {
+            font-size: 0.65rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--accent-dim);
+            margin-bottom: 2rem;
+        }
+
+        .about-text {
+            font-family: var(--serif);
+            font-size: clamp(1.4rem, 3vw, 1.8rem);
+            line-height: 1.55;
+            color: var(--text-secondary);
+        }
+
+        .about-text strong {
+            color: var(--text-primary);
+            font-weight: 400;
+        }
+
+        /* ── What to expect ── */
+        .expect {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 4rem 2rem 8rem;
+        }
+
+        .expect-label {
+            font-size: 0.65rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--accent-dim);
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+
+        .expect-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .expect-card {
+            background: var(--bg-elevated);
+            padding: 2.5rem 2rem;
+            transition: background 0.4s;
+        }
+
+        .expect-card:hover {
+            background: var(--surface);
+        }
+
+        .expect-num {
+            font-family: var(--serif);
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .expect-card h3 {
+            font-family: var(--sans);
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .expect-card p {
+            font-size: 0.82rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
+
+        /* ── Hosts ── */
+        .hosts {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 4rem 2rem 8rem;
+            text-align: center;
+        }
+
+        .hosts-label {
+            font-size: 0.65rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--accent-dim);
+            margin-bottom: 2rem;
+        }
+
+        .hosts-text {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .hosts-names {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+        }
+
+        .host-name {
+            font-family: var(--serif);
+            font-size: 1.3rem;
+            color: var(--text-primary);
+        }
+
+        .host-role {
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-top: 0.3rem;
+        }
+
+        /* ── Bottom CTA ── */
+        .bottom-cta {
+            border-top: 1px solid var(--border);
+            padding: 6rem 2rem;
+            text-align: center;
+        }
+
+        .bottom-cta h2 {
+            font-family: var(--serif);
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 400;
+            margin-bottom: 1rem;
+        }
+
+        .bottom-cta h2 em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .bottom-cta p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+        }
+
+        .bottom-cta .signup-form {
+            margin: 0 auto;
+        }
+
+        /* ── Footer ── */
+        footer {
+            padding: 3rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .footer-mark {
+            font-family: var(--serif);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-size: 0.65rem;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        /* ── Scroll animations ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            nav { padding: 1.2rem 1.5rem; }
+
+            .hero { padding: 7rem 1.5rem 3rem; }
+
+            .signup-form {
+                flex-direction: column;
+                gap: 0.6rem;
+            }
+
+            .signup-input {
+                border-right: 1px solid var(--border);
+                border-radius: 6px;
+            }
+
+            .signup-btn {
+                border-radius: 6px;
+                padding: 1rem;
+            }
+
+            .expect-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hosts-names {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            footer {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Nav -->
+    <nav>
+        <div class="nav-mark">Japan Operator</div>
+        <div class="nav-status">Coming 2025</div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <p class="hero-label">A new podcast from Tokyo</p>
+        <h1 class="hero-title">Japan<br><em>Operator</em></h1>
+        <p class="hero-sub">Conversations with the founders, executives, and investors building businesses in Japan.</p>
+        <form class="signup-form" onsubmit="handleSubmit(event)">
+            <input type="email" class="signup-input" placeholder="your@email.com" required>
+            <button type="submit" class="signup-btn">Notify Me</button>
+        </form>
+        <p class="signup-note">Be the first to know when we launch. No spam.</p>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- About -->
+    <section class="about reveal">
+        <p class="about-label">The Show</p>
+        <p class="about-text">
+            <strong>Japan is the world's fourth-largest economy</strong> — yet the stories behind its most ambitious operators rarely get told in English. We sit down with the people actually doing the work: <strong>building companies, closing deals, and navigating one of the most fascinating business cultures on earth.</strong>
+        </p>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- What to expect -->
+    <section class="expect reveal">
+        <p class="expect-label">What to Expect</p>
+        <div class="expect-grid">
+            <div class="expect-card">
+                <div class="expect-num">01</div>
+                <h3>Deep Conversations</h3>
+                <p>Long-form interviews with founders, operators, and investors who are building real businesses in Japan.</p>
+            </div>
+            <div class="expect-card">
+                <div class="expect-num">02</div>
+                <h3>Inside Access</h3>
+                <p>Stories you won't find in English-language media — from first fundraise to market entry to scale.</p>
+            </div>
+            <div class="expect-card">
+                <div class="expect-num">03</div>
+                <h3>Actionable Insight</h3>
+                <p>Real talk about what it takes to operate in Japan — the culture, the regulations, the opportunities.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Hosts -->
+    <section class="hosts reveal">
+        <p class="hosts-label">Your Hosts</p>
+        <p class="hosts-text">Two operators based in Tokyo, bringing you the conversations that matter from inside the world's most underrated business ecosystem.</p>
+        <div class="hosts-names">
+            <div>
+                <div class="host-name">Host Name</div>
+                <div class="host-role">Co-host</div>
+            </div>
+            <div>
+                <div class="host-name">Host Name</div>
+                <div class="host-role">Co-host</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bottom CTA -->
+    <section class="bottom-cta reveal">
+        <h2>Don't miss <em>episode one.</em></h2>
+        <p>Subscribe to get notified when Japan Operator goes live.</p>
+        <form class="signup-form" onsubmit="handleSubmit(event)">
+            <input type="email" class="signup-input" placeholder="your@email.com" required>
+            <button type="submit" class="signup-btn">Notify Me</button>
+        </form>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-mark">Japan Operator</div>
+        <div class="footer-links">
+            <a href="https://twitter.com" target="_blank">Twitter</a>
+            <a href="https://instagram.com" target="_blank">Instagram</a>
+            <a href="mailto:hello@japanoperator.com">Contact</a>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Form handler (placeholder — swap for your email service)
+        function handleSubmit(e) {
+            e.preventDefault();
+            const input = e.target.querySelector('input');
+            const btn = e.target.querySelector('button');
+            const email = input.value;
+
+            btn.textContent = 'Added ✓';
+            btn.style.background = '#2a5a3a';
+            btn.style.borderColor = '#2a5a3a';
+            input.value = '';
+
+            setTimeout(() => {
+                btn.textContent = 'Notify Me';
+                btn.style.background = '';
+                btn.style.borderColor = '';
+            }, 2500);
+
+            // TODO: Send email to your list
+            // fetch('YOUR_ENDPOINT', { method: 'POST', body: JSON.stringify({ email }) })
+            console.log('Signup:', email);
+        }
+    </script>
+
+</body>
+</html>
